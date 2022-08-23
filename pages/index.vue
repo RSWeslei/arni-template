@@ -1,37 +1,35 @@
 <template>
   <v-container>
-    <v-row style="margin-top: 2%">
+    <v-row class="font mt-5">
       <v-col>
         <template>
           <v-card
-            style="background-color: lightgrey; border-radius: 10px; padding:2%"
+            class="secondary rounded-lg pa-4"
             elevation="10"
           >
-            <v-card-title style="font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">
-                <strong>
-                  Cursos Cadastrados
-                </strong>
+            <v-card-title class="fontBold display-1">
+                Cursos Cadastrados
               <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
-                append-icon="mdi-magnify"
                 color="primary"
-                rounded
-                placeholder="forget"
+                append-icon="mdi-magnify"
+                placeholder="Pesquisar"
+                background-color="secondary"
                 persistent-placeholder
-                background-color="#d3d3d3 lighten-2"
+                hide-details
                 single-line
                 outlined
+                rounded
                 dense
-                hide-details
               ></v-text-field>
               <v-spacer></v-spacer>
               <v-btn
                 class="mx-2"
-                fab
                 elevation="1"
-                small
                 color="primary"
+                fab
+                small
                 @click="dialog = !dialog"
               >
                 <v-icon
@@ -76,21 +74,22 @@
             </v-data-table>
             <v-divider></v-divider>
             <v-card-actions>
-              
-              <div style="width: 100px; padding-top:2%;">
+              <div 
+                class="pt-6"
+              >
                 <v-autocomplete
-                  
                   v-model="itemsPerPage"
                   label="Itens"
                   color= "primary"
-                  style="width:100px; margin-left: -10%; padding-right:4%;"
+                  class="pr-4 ml-6"
+                  style="width:100px;"
                   :items="autocomplete"
-                  outlined
                   background-color="white"
+                  item-value="name"
+                  item-text="name"
+                  outlined
                   dense
                   rounded
-                  item-text="name"
-                  item-value="name"
                 ></v-autocomplete>
               </div>
             <v-spacer></v-spacer>
@@ -112,110 +111,155 @@
       v-model="dialog"
       max-width="850px"
     >
-      <v-card color="white" style="padding:3%">
+      <v-card 
+        color="white" 
+        class="pa-4 rounded-lg"
+      >
         <v-card-title>
-          <span class="cor">Cadastro de universidades</span>
+          <span class="fontBold headline">Cadastro de Universidades</span>
         </v-card-title>
         <v-row style="margin:auto">
           <v-col cols="7">
-            <v-container> 
-              <v-row >
-                <v-text-field
-                  outlined
-                  label="Nome da universidade"
-                  background-color="#d3d3d3"
-                  class="custom-placeholer-color text-green"
-                  placeholder="Nome da universidade"
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  outlined
-                  label="Url do Site"
-                  background-color="#d3d3d3"
-                  color="primary"
-                  placeholder="URL do site"
-                  
-                ></v-text-field>
-              </v-row>
-              <v-row >
-                <v-card-text style="font-size: 15px; margin-top: -25px;" class="cor">
-                  Termo de cooperação
-                </v-card-text>
-              </v-row>
-              <v-row>
-                <v-col
-                  style="font-size: 12px; color: primary;  margin-left: -10px;"
-                  cols="5"
-                >
-                  <v-card-text 
-                    style="font-size: 12px;" class="cor"
-                  >
-                    Data inicial
+            <v-form v-model="valid">
+              <v-container> 
+                <v-row >
+                  <v-text-field
+                    outlined
+                    label="Nome da universidade"
+                    background-color="secondary"
+                    class="custom-placeholer-color text-green"
+                    placeholder="Nome da universidade"
+                    :rules="rule"
+                  ></v-text-field>
+                </v-row>
+                <v-row>
+                  <v-text-field
+                    outlined
+                    label="Url do Site"
+                    background-color="secondary"
+                    color="primary"
+                    placeholder="URL do site"
+                    :rules="rule"
+                  ></v-text-field>
+                </v-row>
+                <v-row>
+                  <v-card-text class="fontBold mt-n6 ml-n3 body-1">
+                    Termo&nbsp;de&nbsp;cooperação
                   </v-card-text>
-                  <v-text-field
-                    background-color="#d3d3d3"
-                    placeholder="10/10/2022"
-                    append-icon="mdi-calendar"
-                    outlined
-                    dense
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col
-                  style="font-size: 12px;  color: primary;"
-                  cols="5"
+                </v-row>
+                <v-row
+                  class="mt-n4"
                 >
-                    <v-card-text style="font-size: 12px;" class="cor">
-                      Data final
-                    </v-card-text>
-                  <v-text-field
-                    background-color="#d3d3d3"
-                    placeholder="10/10/2023"
-                    append-icon="mdi-calendar"
-                    dense
-                    outlined
+                  <v-col
+                    class="ml-n2 body-2" 
+                    cols="5"
                   >
-                  </v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-row style="color: primary">
-                    <p class="cor"
-                    >Observações</p>
-                  </v-row>
-                  <v-row>
-                    <v-textarea
-                      background-color="#d3d3d3"
-                      outlined
+                    <v-menu
+                      v-model="date.menuInicio"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="auto"
                     >
-                    </v-textarea>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </v-container>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date.dateInicio"
+                          label="Data inicial"
+                          persistent-hint
+                          append-icon="mdi-calendar"
+                          readonly
+                          :rules="rule"
+                          outlined
+                          dense
+                          background-color="secondary"
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="dataInicial"
+                        locale="utc"
+                        no-title
+                        @input="date.menuInicio = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col
+                    class="ml-n2 body-2" 
+                    cols="5"
+                  >
+                    <v-menu
+                      v-model="date.menuFim"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="300px"
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date.dateFim"
+                          label="Data final"
+                          persistent-hint
+                          append-icon="mdi-calendar"
+                          readonly
+                          :rules="rule"
+                          outlined
+                          dense
+                          background-color="secondary"
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="dataFinal"
+                        locale="utc"
+                        no-title
+                        @input="date.menuFim = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-row>
+                      <v-card-text 
+                        class="fontBold mt-n8 ml-n3 body-1"
+                      >
+                      Observações</v-card-text>
+                    </v-row>
+                    <v-row>
+                      <v-textarea
+                        background-color="secondary"
+                        outlined
+                        v-model="description"
+                      >
+                      </v-textarea>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
           </v-col>
           <v-col cols="5">
             <v-container>
               <v-row >
-                <v-select
+                <v-autocomplete
                   outlined
                   placeholder="País"
-                  background-color="#d3d3d3"
-                  class="custom-placeholer-color text-green"
-                  persistent-placeholder
-                ></v-select>
+                  label="País"
+                  :rules="rule"
+                  background-color="secondary"
+                ></v-autocomplete>
               </v-row>
               <v-row>
                 <v-container> 
-                  <v-carousel height="200px" style="border-radius:5%">
+                  <v-carousel height="200px" class="rounded-lg">
                     <v-carousel-item
-                      src="https://www.estudarfora.org.br/wp-content/uploads/2020/06/Oxford_university_The_Queen27s_College_by_Fenlio-cccc.jpg"
-                    >
-                    </v-carousel-item>
-                      <v-carousel-item
-                      src="https://www.infoescola.com/wp-content/uploads/2014/02/universidade-faculdade.jpg"
+                      v-for="image in images"
+                      :key="image.url"
+                      :src="image.url"
                     >
                     </v-carousel-item>
                   </v-carousel>
@@ -223,12 +267,15 @@
               </v-row>
               <v-row>
                 <v-file-input
-                  style="padding-right: 20px;"
-                  outlined
-                  background-color="#d3d3d3"
-                  color="#1976d2"
-                  multiple
+                  background-color="secondary"
+                  color="primary "
+                  :rules="rule"
                   label="Enviar imagens"
+                  prepend-icon=""
+                  append-icon="mdi-paperclip"
+                  outlined
+                  dense
+                  multiple
                 >
                 </v-file-input>
               </v-row>
@@ -236,20 +283,20 @@
                 <v-text-field
                   outlined
                   dense
-                  background-color="#d3d3d3"
-                  class="custom-placeholer-color text-green"
+                  :rules="rule"
+                  background-color="secondary"
+                  label="Latitude"
                   placeholder="Latitude"
-                  persistent-placeholder
                 ></v-text-field>
               </v-row>
               <v-row>
                 <v-text-field
                   outlined
                   dense
-                  background-color="#d3d3d3"
-                  class="custom-placeholer-color text-green"
+                  background-color="secondary"
+                  label="Longitude"
+                  :rules="rule"
                   placeholder="Longitude"
-                  persistent-placeholder
                 ></v-text-field>
               </v-row>
             </v-container>
@@ -257,31 +304,30 @@
         </v-row>
         <v-card-actions>
           <v-container >
-            <v-row>
+            <v-row class="ml-12">
               <v-col
                 cols="10"
                 align="right"
               >
-            <v-btn
-              outlined
-              color="red"
-              @click="dialog = false"
-            >
-              Cancelar
-            </v-btn>
-            </v-col>
-              
-            <v-col
-              align="right"
-            >
-            <v-btn
-              outlined
-              color="primary"
-              @click="dialog = false"
-            >
-              Salvar
-            </v-btn>
-           </v-col>
+                <v-btn
+                  outlined
+                  color="red"
+                  @click="dialog = false"
+                >
+                  Cancelar
+                </v-btn>
+              </v-col>
+              <v-col
+                align="right"
+              >
+                <v-btn
+                  outlined
+                  color="primary"
+                  @click="dialog = false"
+                >
+                  Salvar
+                </v-btn>
+              </v-col>
             </v-row>
           </v-container>
         </v-card-actions>
@@ -298,6 +344,24 @@ export default {
     return {
       search: "",
       dialog: false,
+      dataInicial: '',
+      dataFinal: '',
+      valid: false,
+      description: '',
+      date: {
+        menuInicio: '',
+        menuFim: '',
+        dateInicio: '',
+        dateFim: ''
+      },
+      images: [
+        {
+          url: 'https://www.estudarfora.org.br/wp-content/uploads/2020/06/Oxford_university_The_Queen27s_College_by_Fenlio-cccc.jpg',
+        },
+        {
+          url: 'https://www.infoescola.com/wp-content/uploads/2014/02/universidade-faculdade.jpg'
+        }
+      ],
       headers: [
         { text: "Código do Curso", value: "id", align: 'center' },
         { text: "Nome do Curso", value: "name", align: 'center' },
@@ -309,6 +373,9 @@ export default {
       page:1,
       pageCount: 10,
       itemsPerPage:5,
+      rule:[
+        a => !!a || 'Cadastro inválido'
+      ]
     };
   },
   methods:{
@@ -318,7 +385,19 @@ export default {
         name: 'create',
         params: {item}
       })
-    }
+    },
+  },
+  watch:{
+    dataInicial (date) {
+      if (!date) return null
+      const [year, month, day] = date.split('-')
+      return this.date.dateInicio =  `${day}/${month}/${year}`
+    },
+    dataFinal (date) {
+      if (!date) return null
+      const [year, month, day] = date.split('-')
+      return this.date.dateFim =  `${day}/${month}/${year}`
+    },
   }
 };
 </script>
@@ -326,7 +405,10 @@ export default {
 <style
   scoped
 >
-.cor {
+.font {
+  font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.fontBold {
   font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: bold;
 }
